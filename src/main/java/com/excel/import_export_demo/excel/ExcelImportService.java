@@ -1,12 +1,14 @@
 package com.excel.import_export_demo.excel;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -57,4 +59,21 @@ public class ExcelImportService {
         return true;
     }
 
+    public static String getCellValueAsString(Cell cell) {
+		if (cell == null) return "";
+		
+		return switch (cell.getCellType()) {
+		case STRING -> cell.getStringCellValue().trim();
+		case NUMERIC -> {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				yield cell.getDateCellValue().toString();
+			} else {
+				BigDecimal bd = BigDecimal.valueOf(cell.getNumericCellValue());
+				yield bd.stripTrailingZeros().toPlainString();
+			}
+		}
+		case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+		default -> "";
+		};
+	}
 }

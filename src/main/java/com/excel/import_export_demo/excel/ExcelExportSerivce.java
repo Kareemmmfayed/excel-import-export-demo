@@ -27,7 +27,12 @@ public class ExcelExportSerivce {
 
         CellStyle cellStyle = createHeaderStyle(workbook);
 
+        // this only works for classes not recored
         Field[] fields = clazz.getDeclaredFields();
+
+        // Field[] fields = clazz.getRecordComponents() != null
+        //         ? clazz.getRecordComponents()[0].getDeclaringRecord().getDeclaredFields()
+        //         : clazz.getDeclaredFields();
 
         Row header = sheet.createRow(0);
 
@@ -35,7 +40,7 @@ public class ExcelExportSerivce {
 
         for(Field field : fields) {
             field.setAccessible(true);
-            Cell cell = header.getCell(col++);
+            Cell cell = header.createCell(col++);
             cell.setCellValue(formatHeader(field.getName()));
             cell.setCellStyle(cellStyle);
         }
@@ -47,7 +52,7 @@ public class ExcelExportSerivce {
             int colNum = 0;
 
             for(Field field : fields) {
-                Cell cell = row.getCell(colNum);
+                Cell cell = row.createCell(colNum++);
                 Object value = field.get(item);
                 cell.setCellValue(value == null ? "" : value.toString());
                 cell.setCellStyle(cellStyle);

@@ -54,7 +54,7 @@ public class ExcelExportSerivce {
             }
         }
 
-                for (int i = 0; i < fields.length; i++) {
+        for (int i = 0; i < fields.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
